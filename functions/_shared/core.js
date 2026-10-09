@@ -122,7 +122,8 @@ async function searchOpenAlex(q, limit) {
   } catch { return []; }
 }
 
-// Fallback only - not an official API, lowest weight, flagged in output.
+// DuckDuckGo is the PRIMARY source. It is the one non-official source here,
+// so it is weighted highest and labelled in every response.
 async function searchDuckDuckGo(q, limit) {
   try {
     const res = await fetch(`https://lite.duckduckgo.com/lite/?q=${encodeURIComponent(q)}`, {
@@ -147,7 +148,7 @@ async function searchDuckDuckGo(q, limit) {
           url = p.searchParams.get('uddg') ? decodeURIComponent(p.searchParams.get('uddg')) : u;
         } catch { url = u; }
       }
-      return { engine: 'duckduckgo-fallback', title: stripTags(m[1]), url, snippet: stripTags(snips[i] ? snips[i][1] : ''), weight: 0.7 };
+      return { engine: 'duckduckgo', title: stripTags(m[1]), url, snippet: stripTags(snips[i] ? snips[i][1] : ''), weight: 1.5 };
     }).slice(0, limit);
   } catch { return []; }
 }
@@ -197,20 +198,21 @@ export async function search(env, query, page = 1) {
   const q = (query || '').trim();
   const empty = {
     status: 'success',
-    mode: 'Cloudflare Pages + D1 (own index)',
+    mode: 'Cloudflare Pages + D1 (DuckDuckGo first, own index second)',
     provider: 'SpiderSearch',
-    query: q, page, total_pages: TOTAL_PAGES,
+    query: '', page, total_pages: TOTAL_PAGES,
     total_matches: 0, matches_on_page: 0, results: []
   };
   if (!q) return empty;
 
-  const [wiki, se, ax, hn, oa, own] = await Promise.all([
-    searchWikipedia(q, 6), searchStackExchange(q, 6), searchArxiv(q, 4),
-    searchHackerNews(q, 5), searchOpenAlex(q, 4), searchOwnIndex(env, q, 8)
+  const [ddg, wiki, se, ax, hn, oa, own] = await Promise.all([
+    searchDuckDuckGo(q, 10), searchWikipedia(q, 6), searchStackExchange(q, 6),
+    searchArxiv(q, 4), searchHackerNews(q, 5), searchOpenAlex(q, 4),
+    searchOwnIndex(env, q, 8)
   ]);
 
-  let hits = [...wiki, ...se, ...ax, ...hn, ...oa, ...own];
-  if (hits.length < 5) hits = hits.concat(await searchDuckDuckGo(q, 8));
+  // DuckDuckGo leads, our own index sits right behind it
+  const hits = [...ddg, ...own, ...wiki, ...se, ...ax, ...hn, ...oa];
 
   const map = new Map();
   for (const hit of hits) {
@@ -254,7 +256,7 @@ export async function search(env, query, page = 1) {
 
   return {
     status: 'success',
-    mode: 'Cloudflare Pages + D1 (own index)',
+    mode: 'Cloudflare Pages + D1 (DuckDuckGo first, own index second)',
     provider: 'SpiderSearch',
     query: q, page, total_pages: TOTAL_PAGES,
     total_matches: all.length, matches_on_page: slice.length,
