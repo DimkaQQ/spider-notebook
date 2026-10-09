@@ -459,7 +459,7 @@ export default function SpiderSearch({ onBack = () => {} }) {
               <span>
                 {totalMatches} matches · page {data.page}/{totalPages}
               </span>
-              <span className="hidden sm:inline">SpiderSearch · Stand-in Relay</span>
+              <span className="hidden sm:inline">{data.mode}</span>
             </div>
 
             {results.length === 0 ? (
