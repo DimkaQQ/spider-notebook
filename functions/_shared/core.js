@@ -12,7 +12,7 @@ export const OWNED = {
 };
 
 const UA = 'SpiderSearch/3.0 (M4 Spider; +https://m4spider.com)';
-const PER_PAGE = 10;
+const PER_PAGE = 20;
 const TOTAL_PAGES = 20;
 
 export const TRUSTED = [
@@ -221,9 +221,9 @@ export async function search(env, query, page = 1) {
   if (!q) return empty;
 
   const [ddg, wiki, se, ax, hn, oa, own] = await Promise.all([
-    searchDuckDuckGo(q, 10), searchWikipedia(q, 6), searchStackExchange(q, 6),
-    searchArxiv(q, 4), searchHackerNews(q, 5), searchOpenAlex(q, 4),
-    searchOwnIndex(env, q, 8)
+    searchDuckDuckGo(q, 20), searchWikipedia(q, 10), searchStackExchange(q, 10),
+    searchArxiv(q, 6), searchHackerNews(q, 8), searchOpenAlex(q, 6),
+    searchOwnIndex(env, q, 12)
   ]);
 
   // DuckDuckGo leads, our own index sits right behind it
