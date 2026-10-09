@@ -21,28 +21,61 @@ export const TRUSTED = [
 ];
 
 // Famous domains people actually search for - these rank above everything else
+// Subdomains verified against each company's own documentation.
 export const FAMOUS_DOMAINS = [
-  'google.com', 'youtube.com', 'blog.google', 'android.com',
-  'facebook.com', 'instagram.com', 'whatsapp.com', 'threads.net', 'meta.com',
-  'x.com', 'twitter.com',
-  'grok.com', 'chatgpt.com', 'openai.com',
-  'm4spider.com', 'ai.m4spider.com', 'maps.m4spider.com',
-  'amazon.com', 'apple.com', 'microsoft.com', 'github.com',
-  'reddit.com', 'linkedin.com', 'netflix.com', 'spotify.com',
-  'wikipedia.org', 'wikimedia.org', 'archive.org',
-  'stackoverflow.com', 'stackexchange.com',
-  'arxiv.org', 'nature.com', 'sciencedirect.com',
-  'github.io', 'gitlab.com', 'npmjs.com',
-  'medium.com', 'dev.to', 'substack.com',
-  'bing.com', 'duckduckgo.com', 'yahoo.com', 'baidu.com',
-  'quora.com', 'pinterest.com', 'tiktok.com', 'snapchat.com',
-  'telegram.org', 'discord.com', 'slack.com', 'zoom.us',
-  'cloudflare.com', 'vercel.com', 'netlify.com', 'heroku.com',
-  'docker.com', 'kubernetes.io', 'terraform.io',
-  'python.org', 'nodejs.org', 'rust-lang.org', 'golang.org',
-  'mozilla.org', 'developer.mozilla.org',
-  'w3.org', 'ietf.org', 'ieee.org',
-  'nasa.gov', 'nih.gov', 'europa.eu'
+  // Google
+  'google.com', 'www.google.com', 'myaccount.google.com', 'accounts.google.com',
+  'support.google.com', 'developers.google.com', 'developer.google.com',
+  'cloud.google.com', 'console.cloud.google.com', 'docs.cloud.google.com',
+  'support.cloud.google.com', 'dev.cloud.google.com', 'support.corp.google.com',
+  'youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com',
+  'blog.google.com', 'android.com', 'play.google.com', 'maps.google.com',
+  'drive.google.com', 'docs.google.com', 'mail.google.com', 'translate.google.com',
+  'news.google.com', 'finance.google.com', 'photos.google.com', 'calendar.google.com',
+  'firebase.google.com', 'admob.com',
+  // Meta
+  'facebook.com', 'www.facebook.com', 'm.facebook.com', 'business.facebook.com',
+  'instagram.com', 'www.instagram.com', 'l.instagram.com',
+  'whatsapp.com', 'www.whatsapp.com', 'web.whatsapp.com',
+  'threads.net', 'www.threads.net', 'meta.com', 'about.meta.com',
+  // X / Twitter
+  'x.com', 'www.x.com', 'mobile.x.com', 'api.x.com',
+  'twitter.com', 'www.twitter.com', 'mobile.twitter.com',
+  // OpenAI
+  'openai.com', 'www.openai.com', 'auth.openai.com', 'ads.openai.com',
+  'devday.openai.com', 'platform.openai.com', 'api.openai.com',
+  'chatgpt.com', 'www.chatgpt.com', 'chat.openai.com', 'desktop.chat.openai.com',
+  'android.chat.openai.com', 'ios.chat.openai.com', 'auth0.openai.com',
+  'oaistatic.com', 'oaiusercontent.com',
+  // xAI
+  'grok.com', 'www.grok.com',
+  // M4 Spider (owned)
+  'm4spider.com', 'www.m4spider.com', 'ai.m4spider.com', 'maps.m4spider.com',
+  'aistudio.m4spider.com',
+  // Other major platforms
+  'amazon.com', 'www.amazon.com', 'aws.amazon.com', 'smile.amazon.com',
+  'apple.com', 'www.apple.com', 'icloud.com', 'developer.apple.com',
+  'microsoft.com', 'www.microsoft.com', 'azure.com', 'office.com', 'bing.com',
+  'github.com', 'www.github.com', 'github.io', 'gitlab.com', 'npmjs.com',
+  'reddit.com', 'www.reddit.com', 'old.reddit.com', 'np.reddit.com',
+  'linkedin.com', 'www.linkedin.com', 'mobile.linkedin.com',
+  'netflix.com', 'www.netflix.com', 'spotify.com', 'www.spotify.com',
+  'wikipedia.org', 'www.wikipedia.org', 'en.wikipedia.org', 'wikimedia.org',
+  'archive.org', 'www.archive.org', 'web.archive.org',
+  'stackoverflow.com', 'stackexchange.com', 'superuser.com', 'serverfault.com',
+  'arxiv.org', 'www.arxiv.org', 'nature.com', 'sciencedirect.com',
+  'medium.com', 'www.medium.com', 'dev.to', 'substack.com',
+  'duckduckgo.com', 'duck.com', 'lite.duckduckgo.com',
+  'yahoo.com', 'www.yahoo.com', 'mail.yahoo.com',
+  'quora.com', 'www.quora.com', 'pinterest.com', 'www.pinterest.com',
+  'tiktok.com', 'www.tiktok.com', 'snapchat.com', 'www.snapchat.com',
+  'telegram.org', 'telegram.me', 'discord.com', 'discord.gg',
+  'slack.com', 'www.slack.com', 'zoom.us', 'www.zoom.us',
+  'cloudflare.com', 'www.cloudflare.com', 'developers.cloudflare.com',
+  'docker.com', 'hub.docker.com', 'kubernetes.io', 'terraform.io',
+  'python.org', 'www.python.org', 'nodejs.org', 'rust-lang.org', 'golang.org',
+  'mozilla.org', 'developer.mozilla.org', 'firefox.com',
+  'w3.org', 'ietf.org', 'ieee.org', 'nasa.gov', 'nih.gov', 'europa.eu'
 ];
 
 // Domain priority: famous domains first, then .com, then X/Twitter, then others
