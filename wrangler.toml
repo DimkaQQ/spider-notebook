@@ -4,13 +4,11 @@ pages_build_output_dir = "dist"
 
 # Spider Search index.
 #
-# The D1 binding is configured in the Cloudflare dashboard
-# (Settings -> Functions -> Bindings -> Add -> D1 database).
-# Do NOT add a [[d1_databases]] block here unless database_id is a real UUID -
-# a placeholder makes every Pages build fail with:
+# This project manages bindings through wrangler.toml (the dashboard Add
+# Binding UI is disabled), so the D1 binding must live here.
+# database_id must be a real UUID - a placeholder fails every build with:
 #   Error 8000022: Invalid database UUID
-#
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "spidersearch"
-# database_id = "00000000-0000-0000-0000-000000000000"
+[[d1_databases]]
+binding = "DB"
+database_name = "spidersearch"
+database_id = "4c12ed02-ae20-4e2c-a580-0734ad60be3b"
