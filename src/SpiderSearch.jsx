@@ -46,7 +46,30 @@ export default function SpiderSearch({ onBack = () => {} }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [submitted, setSubmitted] = useState('');
+  
+  // Important domains list
+  const [open, setOpen] = useState(false);
+  const [cfg, setCfg] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/domains')
+      .then((r) => r.json())
+      .then((d) => {
+        if (!cancelled) { setCfg(d); setLoading(false); }
+      })
+      .catch((e) => {
+        if (!cancelled) { setError(e.message); setLoading(false); }
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  const famous = cfg ? cfg.famousPatterns : [];
+  const brands = cfg ? cfg.brands : {};
+  const brandNames = Object.keys(brands);
+const [submitted, setSubmitted] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [suggestOpen, setSuggestOpen] = useState(false);
   const [activeSuggest, setActiveSuggest] = useState(-1);
@@ -571,5 +594,81 @@ export default function SpiderSearch({ onBack = () => {} }) {
       )}
       </div>
     </div>
+
+      {/* ============ IMPORTANT DOMAINS ============ */}
+      <div className="border-t border-slate-900 bg-[#020509]">
+        <div className="max-w-3xl mx-auto px-6 py-8">
+          <details className="group">
+            <summary className="flex items-center justify-between cursor-pointer list-none">
+              <div>
+                <h3 className="font-mono text-xs font-bold tracking-widest text-slate-400 uppercase">
+                  Important Domains
+                </h3>
+                <p className="text-[11px] text-slate-600 mt-1 font-mono">
+                  Which domains outrank everything else
+                </p>
+              </div>
+              <span className="font-mono text-slate-500 group-open:hidden">+</span>
+              <span className="font-mono text-slate-500 hidden group-open:inline">-</span>
+            </summary>
+
+            <div className="mt-6 space-y-6">
+              {loading && (
+                <p className="font-mono text-[11px] text-slate-500">loading domain list…</p>
+              )}
+              {error && (
+                <p className="font-mono text-[11px] text-amber-400">could not load: {error}</p>
+              )}
+
+              {brandNames.length > 0 && (
+                <div>
+                  <h4 className="font-mono text-[10px] tracking-widest text-cyan-400 uppercase mb-3">
+                    Brand search → only that brand's domains
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {brandNames.map((b) => (
+                      <div
+                        key={b}
+                        className="rounded-lg border border-slate-800 bg-[#0b1622] px-2.5 py-2"
+                      >
+                        <div className="font-mono text-[10px] font-bold text-slate-200 truncate">
+                          {b}
+                        </div>
+                        <div className="font-mono text-[9px] text-slate-500 truncate">
+                          → {brands[b].join(', ')}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {famous.length > 0 && (
+                <div>
+                  <h4 className="font-mono text-[10px] tracking-widest text-cyan-400 uppercase mb-3">
+                    Priority domains · {famous.length} total
+                    <span className="text-slate-500 normal-case tracking-normal">
+                      {' '}— *.example.com matches any subdomain
+                    </span>
+                  </h4>
+                  <div className="rounded-lg border border-slate-800 bg-[#0b1622] p-4">
+                    <div className="font-mono text-[11px] leading-[1.9] text-slate-300 break-all">
+                      {famous.map((d, i) => (
+                        <span key={d}>
+                          <span className={d.startsWith('*.') ? 'text-cyan-300' : ''}>{d}</span>
+                          {i < famous.length - 1 ? ', ' : ''}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="mt-2 font-mono text-[10px] text-slate-600">
+                    Showing all {famous.length} — no limit
+                  </p>
+                </div>
+              )}
+            </div>
+          </details>
+        </div>
+      </div>
   );
 }
