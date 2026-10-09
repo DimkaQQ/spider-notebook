@@ -565,7 +565,7 @@ export default function SpiderSearch({ onBack = () => {} }) {
         <footer className="border-t border-slate-900 bg-[#020509]">
           <div className="max-w-3xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] tracking-widest text-slate-600 uppercase">
             <span>M4 SPIDER TECHNOLOGIES · SPIDER SEARCH</span>
-            <span>Stand-in relay · DuckDuckGo upstream</span>
+            <span>Official APIs + own index</span>
           </div>
         </footer>
       )}
