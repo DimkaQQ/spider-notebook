@@ -20,19 +20,108 @@ export const TRUSTED = [
   'stackoverflow.com', 'arxiv.org', 'dev.to', 'medium.com'
 ];
 
-// Domain priority: .com first, then X/Twitter, then Archive.org, Wikipedia, others
+// Famous domains people actually search for - these rank above everything else
+export const FAMOUS_DOMAINS = [
+  'google.com', 'youtube.com', 'blog.google', 'android.com',
+  'facebook.com', 'instagram.com', 'whatsapp.com', 'threads.net', 'meta.com',
+  'x.com', 'twitter.com',
+  'grok.com', 'chatgpt.com', 'openai.com',
+  'm4spider.com', 'ai.m4spider.com', 'maps.m4spider.com',
+  'amazon.com', 'apple.com', 'microsoft.com', 'github.com',
+  'reddit.com', 'linkedin.com', 'netflix.com', 'spotify.com',
+  'wikipedia.org', 'wikimedia.org', 'archive.org',
+  'stackoverflow.com', 'stackexchange.com',
+  'arxiv.org', 'nature.com', 'sciencedirect.com',
+  'github.io', 'gitlab.com', 'npmjs.com',
+  'medium.com', 'dev.to', 'substack.com',
+  'bing.com', 'duckduckgo.com', 'yahoo.com', 'baidu.com',
+  'quora.com', 'pinterest.com', 'tiktok.com', 'snapchat.com',
+  'telegram.org', 'discord.com', 'slack.com', 'zoom.us',
+  'cloudflare.com', 'vercel.com', 'netlify.com', 'heroku.com',
+  'docker.com', 'kubernetes.io', 'terraform.io',
+  'python.org', 'nodejs.org', 'rust-lang.org', 'golang.org',
+  'mozilla.org', 'developer.mozilla.org',
+  'w3.org', 'ietf.org', 'ieee.org',
+  'nasa.gov', 'nih.gov', 'europa.eu'
+];
+
+// Domain priority: famous domains first, then .com, then X/Twitter, then others
 export function domainPriority(url) {
   try {
     const u = new URL(url);
     const host = u.hostname.replace(/^www\./, '');
-    if (host.endsWith('.com')) return 0;
-    if (host === 'x.com' || host === 'twitter.com') return 1;
-    if (host === 'archive.org') return 2;
-    if (host === 'wikipedia.org') return 3;
-    return 4;
+    if (FAMOUS_DOMAINS.includes(host)) return 0;
+    if (host.endsWith('.com')) return 1;
+    if (host === 'x.com' || host === 'twitter.com') return 2;
+    if (host === 'archive.org') return 3;
+    if (host === 'wikipedia.org') return 4;
+    return 5;
   } catch {
-    return 4;
+    return 5;
   }
+}
+
+// Brand name -> domain. When the query names one of these, only that
+// brand's domain should appear in results.
+const BRAND_DOMAINS = {
+  'google': ['google.com', 'youtube.com', 'blog.google', 'android.com'],
+  'facebook': ['facebook.com', 'instagram.com', 'whatsapp.com', 'threads.net', 'meta.com'],
+  'instagram': ['instagram.com', 'facebook.com', 'threads.net'],
+  'whatsapp': ['whatsapp.com', 'facebook.com'],
+  'threads': ['threads.net', 'instagram.com'],
+  'x': ['x.com', 'twitter.com'],
+  'twitter': ['x.com', 'twitter.com'],
+  'grok': ['grok.com', 'x.com'],
+  'chatgpt': ['chatgpt.com', 'openai.com'],
+  'openai': ['openai.com', 'chatgpt.com'],
+  'm4 spider': ['m4spider.com', 'ai.m4spider.com', 'maps.m4spider.com'],
+  'm4spider': ['m4spider.com', 'ai.m4spider.com', 'maps.m4spider.com'],
+  'spider os': ['m4spider.com'],
+  'spider': ['m4spider.com'],
+  'amazon': ['amazon.com', 'aws.amazon.com'],
+  'apple': ['apple.com', 'icloud.com'],
+  'microsoft': ['microsoft.com', 'azure.com', 'office.com', 'bing.com'],
+  'github': ['github.com', 'github.io', 'gitlab.com'],
+  'reddit': ['reddit.com'],
+  'linkedin': ['linkedin.com'],
+  'netflix': ['netflix.com'],
+  'wikipedia': ['wikipedia.org', 'wikimedia.org'],
+  'bing': ['bing.com'],
+  'duckduckgo': ['duckduckgo.com', 'duck.com'],
+  'yahoo': ['yahoo.com'],
+  'quora': ['quora.com'],
+  'pinterest': ['pinterest.com'],
+  'tiktok': ['tiktok.com'],
+  'telegram': ['telegram.org'],
+  'discord': ['discord.com'],
+  'cloudflare': ['cloudflare.com'],
+  'docker': ['docker.com', 'hub.docker.com'],
+  'python': ['python.org'],
+  'nodejs': ['nodejs.org', 'npmjs.com'],
+  'rust': ['rust-lang.org'],
+  'mozilla': ['mozilla.org', 'developer.mozilla.org', 'firefox.com'],
+  'nasa': ['nasa.gov']
+};
+
+// Returns a large score boost if the query names this brand and the URL
+// belongs to that brand's domain. 0 means "no match".
+export function brandDomainBoost(query, url) {
+  const q = (query || '').toLowerCase();
+  let host = '';
+  try {
+    host = new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return 0;
+  }
+
+  for (const [brand, domains] of Object.entries(BRAND_DOMAINS)) {
+    // match whole words only, so "x" doesn't fire inside "excel"
+    const re = new RegExp(`(^|[^a-z0-9])${brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`);
+    if (re.test(q) && domains.some((d) => host === d || host.endsWith('.' + d))) {
+      return 1000; // effectively "only show this brand"
+    }
+  }
+  return 0;
 }
 
 export const stripTags = (s) =>
@@ -263,13 +352,18 @@ export async function search(env, query, page = 1) {
     for (const w of qWords) { if (t.includes(w)) score += 8; if (s.includes(w)) score += 3; }
     if (TRUSTED.some((d) => u.includes(d))) score += 10;
 
-    // Domain priority boost: .com first, then X/Twitter, then Archive.org/Wikipedia
+    // When the query names a famous brand, ONLY that brand's domain should
+    // surface - boost it far above everything else.
+    const brandBoost = brandDomainBoost(q, u);
+    if (brandBoost) score += brandBoost;
+
+    // Domain priority: famous domains first, then .com, then X/Twitter, then others
     const dp = domainPriority(u);
-    if (dp === 0) score += 200;     // .com domains always first
-    else if (dp === 1) score += 100; // X/Twitter second
-    else if (dp === 2) score += 20;  // Archive.org third
-    else if (dp === 3) score += 5;   // Wikipedia fourth
-    // dp === 4 gets no bonus
+    if (dp === 0) score += 200;      // famous domains always first
+    else if (dp === 1) score += 100; // .com second
+    else if (dp === 2) score += 50;  // X/Twitter third
+    else if (dp === 3) score += 20;  // Archive.org fourth
+    else if (dp === 4) score += 5;   // Wikipedia fifth
 
     const owned = isOwned(u);
     if (owned) score += OWNED.boost;
