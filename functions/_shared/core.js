@@ -20,6 +20,21 @@ export const TRUSTED = [
   'stackoverflow.com', 'arxiv.org', 'dev.to', 'medium.com'
 ];
 
+// Domain priority: .com first, then X/Twitter, then Archive.org, Wikipedia, others
+export function domainPriority(url) {
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, '');
+    if (host.endsWith('.com')) return 0;
+    if (host === 'x.com' || host === 'twitter.com') return 1;
+    if (host === 'archive.org') return 2;
+    if (host === 'wikipedia.org') return 3;
+    return 4;
+  } catch {
+    return 4;
+  }
+}
+
 export const stripTags = (s) =>
   (s || '')
     .replace(/<[^>]+>/g, ' ')
@@ -240,6 +255,15 @@ export async function search(env, query, page = 1) {
     if (s.includes(ql)) score += 20;
     for (const w of qWords) { if (t.includes(w)) score += 8; if (s.includes(w)) score += 3; }
     if (TRUSTED.some((d) => u.includes(d))) score += 10;
+
+    // Domain priority boost: .com first, then X/Twitter, then Archive.org/Wikipedia
+    const dp = domainPriority(u);
+    if (dp === 0) score += 50;      // .com domains first
+    else if (dp === 1) score += 30; // X/Twitter
+    else if (dp === 2) score += 5;  // Archive.org
+    else if (dp === 3) score += 0;  // Wikipedia (no bonus)
+    // dp === 4 gets no bonus
+
     const owned = isOwned(u);
     if (owned) score += OWNED.boost;
     ranked.push({
