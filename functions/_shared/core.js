@@ -227,6 +227,12 @@ export async function search(env, query, page = 1) {
     searchOwnIndex(env, q, 12)
   ]);
 
+  // per-source hit counts, so a dead source is visible in the response
+  const sources = {};
+  for (const hit of [...ddg, ...own, ...wiki, ...se, ...ax, ...hn, ...oa]) {
+    sources[hit.engine] = (sources[hit.engine] || 0) + 1;
+  }
+
   // DuckDuckGo leads, our own index sits right behind it
   const hits = [...ddg, ...own, ...wiki, ...se, ...ax, ...hn, ...oa];
 
@@ -286,6 +292,7 @@ export async function search(env, query, page = 1) {
     query: q, page, total_pages: TOTAL_PAGES,
     total_matches: all.length, matches_on_page: slice.length,
     results: slice,
+    sources,
     index: await indexStats(env)
   };
 }
