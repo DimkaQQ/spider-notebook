@@ -174,7 +174,8 @@ async function searchOwnIndex(env, q, limit) {
   if (!env || !env.DB) return [];
   const terms = q.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 1).slice(0, 8);
   if (!terms.length) return [];
-  const match = terms.map((t) => `"${t}"*`).join(' OR ');
+  // Use AND between terms for precision - all terms must be present
+  const match = terms.map((t) => `"${t}"*`).join(' AND ');
   try {
     const { results } = await env.DB.prepare(
       `SELECT f.url AS url, f.title AS title,
@@ -251,17 +252,17 @@ export async function search(env, query, page = 1) {
     let score = item.score;
     const t = (item.title || '').toLowerCase();
     const s = (item.snippet || '').toLowerCase();
-    if (t.includes(ql)) score += 35;
-    if (s.includes(ql)) score += 20;
+    if (t.includes(ql)) score += 50;  // exact phrase in title - much higher
+    if (s.includes(ql)) score += 25;  // exact phrase in snippet
     for (const w of qWords) { if (t.includes(w)) score += 8; if (s.includes(w)) score += 3; }
     if (TRUSTED.some((d) => u.includes(d))) score += 10;
 
     // Domain priority boost: .com first, then X/Twitter, then Archive.org/Wikipedia
     const dp = domainPriority(u);
-    if (dp === 0) score += 50;      // .com domains first
-    else if (dp === 1) score += 30; // X/Twitter
-    else if (dp === 2) score += 5;  // Archive.org
-    else if (dp === 3) score += 0;  // Wikipedia (no bonus)
+    if (dp === 0) score += 200;     // .com domains always first
+    else if (dp === 1) score += 100; // X/Twitter second
+    else if (dp === 2) score += 20;  // Archive.org third
+    else if (dp === 3) score += 5;   // Wikipedia fourth
     // dp === 4 gets no bonus
 
     const owned = isOwned(u);
