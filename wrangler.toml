@@ -1,0 +1,11 @@
+name = "spider-notebook"
+compatibility_date = "2026-01-29"
+pages_build_output_dir = "dist"
+
+# Spider Search index.
+# 1. Create it once:   npx wrangler d1 create spidersearch
+# 2. Paste the returned database_id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "spidersearch"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"

@@ -17,7 +17,17 @@ export default defineConfig({
     allowedHosts: [
       'm4spider.com',
       'www.m4spider.com'
-    ]
+    ],
+
+    // In local dev the Pages Functions don't run, so proxy /api to the
+    // standalone Node relay. In production Cloudflare serves /api directly.
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:7788',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api/, '')
+      }
+    }
   }
 });
 

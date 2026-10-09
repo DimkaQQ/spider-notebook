@@ -29,6 +29,7 @@ import SpyDocs from './SpyDocs';
 import SpiderCloud from './cloud';
 import SpiderChip from './chip';
 import SpiderNotebookAgent from './spidernotebook';
+import SpiderSearch from './SpiderSearch';
 
 const CyberStyles = () => (
   <style dangerouslySetInnerHTML={{ __html: `
@@ -370,6 +371,7 @@ export default function App() {
   const [showCloud, setShowCloud] = useState(false);
   const [showChip, setShowChip] = useState(false);
   const [showNotebook, setShowNotebook] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const [previousPage, setPreviousPage] = useState('home');
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -515,6 +517,15 @@ export default function App() {
       color: "purple",
       icon: Cpu,
       highlights: ["Robust memory space isolations", "Native system level AI integrations", "Dynamic scheduling cores"]
+    },
+    {
+      id: "search",
+      title: "Spider Search",
+      desc: "Native search engine served locally by the Spider OS stack. Direct HTTPS mode with zero gateways and zero database, returning ranked results straight from the on-device corpus.",
+      status: "LIVE",
+      color: "teal",
+      icon: Compass,
+      highlights: ["Local daemon on port 7788", "Direct HTTPS - no gateway hops", "Ranked title, url and snippet results"]
     },
     {
       id: "store",
@@ -1473,6 +1484,13 @@ export default function App() {
                   >
                     LAUNCH AGENT
                   </button>
+                ) : selectedProduct.id === 'search' ? (
+                  <button 
+                    onClick={() => { setSelectedProduct(null); openOverlay(setShowSearch, 'search'); }}
+                    className="flex-1 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-bold font-mono text-xs py-2.5 rounded-lg tracking-wider text-center"
+                  >
+                    OPEN SPIDER SEARCH
+                  </button>
                 ) : (
                   <button 
                     onClick={() => { setSelectedProduct(null); navigateTo('contact'); }}
@@ -1515,6 +1533,12 @@ export default function App() {
       {showNotebook && (
         <div className="fixed inset-0 z-50 bg-black overflow-y-auto">
           <SpiderNotebookAgent onBack={() => closeOverlay(setShowNotebook)} />
+        </div>
+      )}
+
+      {showSearch && (
+        <div className="fixed inset-0 z-50 bg-black overflow-y-auto">
+          <SpiderSearch onBack={() => closeOverlay(setShowSearch)} />
         </div>
       )}
 

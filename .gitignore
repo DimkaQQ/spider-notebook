@@ -22,3 +22,17 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Cloudflare
+.wrangler/
+.mf/
+.dev.vars
+
+# Spider Search local index (never commit the crawl store)
+*.db
+*.db-wal
+*.db-shm
+
+# Secrets
+.env
+.env.*
