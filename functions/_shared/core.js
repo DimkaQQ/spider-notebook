@@ -20,70 +20,71 @@ export const TRUSTED = [
   'stackoverflow.com', 'arxiv.org', 'dev.to', 'medium.com'
 ];
 
-// Famous domains people actually search for - these rank above everything else
+// Famous domains people actually search for - these rank above everything else.
 // Subdomains verified against each company's own documentation.
-export const FAMOUS_DOMAINS = [
+//
+// Pattern syntax:
+//   "*.example.com"  -> example.com AND any subdomain (a.b.example.com)
+//   "example.com"    -> exact host only
+export const FAMOUS_PATTERNS = [
   // Google
-  'google.com', 'www.google.com', 'myaccount.google.com', 'accounts.google.com',
-  'support.google.com', 'developers.google.com', 'developer.google.com',
-  'cloud.google.com', 'console.cloud.google.com', 'docs.cloud.google.com',
-  'support.cloud.google.com', 'dev.cloud.google.com', 'support.corp.google.com',
-  'youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com',
-  'blog.google.com', 'android.com', 'play.google.com', 'maps.google.com',
-  'drive.google.com', 'docs.google.com', 'mail.google.com', 'translate.google.com',
-  'news.google.com', 'finance.google.com', 'photos.google.com', 'calendar.google.com',
-  'firebase.google.com', 'admob.com',
+  '*.google.com', 'youtube.com', '*.youtube.com', 'android.com', 'play.google.com',
+  'blog.google.com', 'firebase.google.com', 'admob.com',
   // Meta
-  'facebook.com', 'www.facebook.com', 'm.facebook.com', 'business.facebook.com',
-  'instagram.com', 'www.instagram.com', 'l.instagram.com',
-  'whatsapp.com', 'www.whatsapp.com', 'web.whatsapp.com',
-  'threads.net', 'www.threads.net', 'meta.com', 'about.meta.com',
+  '*.facebook.com', 'facebook.com', '*.instagram.com', 'instagram.com',
+  '*.whatsapp.com', 'whatsapp.com', 'threads.net', '*.threads.net',
+  'meta.com', 'about.meta.com',
   // X / Twitter
-  'x.com', 'www.x.com', 'mobile.x.com', 'api.x.com',
-  'twitter.com', 'www.twitter.com', 'mobile.twitter.com',
-  // OpenAI
-  'openai.com', 'www.openai.com', 'auth.openai.com', 'ads.openai.com',
-  'devday.openai.com', 'platform.openai.com', 'api.openai.com',
-  'chatgpt.com', 'www.chatgpt.com', 'chat.openai.com', 'desktop.chat.openai.com',
-  'android.chat.openai.com', 'ios.chat.openai.com', 'auth0.openai.com',
-  'oaistatic.com', 'oaiusercontent.com',
+  'x.com', '*.x.com', 'twitter.com', '*.twitter.com',
   // xAI
-  'grok.com', 'www.grok.com',
+  'grok.com', '*.grok.com',
+  // OpenAI
+  '*.openai.com', 'openai.com', '*.chatgpt.com', 'chatgpt.com',
+  'oaistatic.com', 'oaiusercontent.com',
   // M4 Spider (owned)
-  'm4spider.com', 'www.m4spider.com', 'ai.m4spider.com', 'maps.m4spider.com',
-  'aistudio.m4spider.com',
+  '*.m4spider.com', 'm4spider.com',
   // Other major platforms
-  'amazon.com', 'www.amazon.com', 'aws.amazon.com', 'smile.amazon.com',
-  'apple.com', 'www.apple.com', 'icloud.com', 'developer.apple.com',
-  'microsoft.com', 'www.microsoft.com', 'azure.com', 'office.com', 'bing.com',
-  'github.com', 'www.github.com', 'github.io', 'gitlab.com', 'npmjs.com',
-  'reddit.com', 'www.reddit.com', 'old.reddit.com', 'np.reddit.com',
-  'linkedin.com', 'www.linkedin.com', 'mobile.linkedin.com',
-  'netflix.com', 'www.netflix.com', 'spotify.com', 'www.spotify.com',
-  'wikipedia.org', 'www.wikipedia.org', 'en.wikipedia.org', 'wikimedia.org',
-  'archive.org', 'www.archive.org', 'web.archive.org',
-  'stackoverflow.com', 'stackexchange.com', 'superuser.com', 'serverfault.com',
-  'arxiv.org', 'www.arxiv.org', 'nature.com', 'sciencedirect.com',
-  'medium.com', 'www.medium.com', 'dev.to', 'substack.com',
-  'duckduckgo.com', 'duck.com', 'lite.duckduckgo.com',
-  'yahoo.com', 'www.yahoo.com', 'mail.yahoo.com',
-  'quora.com', 'www.quora.com', 'pinterest.com', 'www.pinterest.com',
-  'tiktok.com', 'www.tiktok.com', 'snapchat.com', 'www.snapchat.com',
-  'telegram.org', 'telegram.me', 'discord.com', 'discord.gg',
-  'slack.com', 'www.slack.com', 'zoom.us', 'www.zoom.us',
-  'cloudflare.com', 'www.cloudflare.com', 'developers.cloudflare.com',
-  'docker.com', 'hub.docker.com', 'kubernetes.io', 'terraform.io',
-  'python.org', 'www.python.org', 'nodejs.org', 'rust-lang.org', 'golang.org',
-  'mozilla.org', 'developer.mozilla.org', 'firefox.com',
+  '*.amazon.com', 'amazon.com', '*.apple.com', 'apple.com', 'icloud.com',
+  '*.microsoft.com', 'microsoft.com', 'azure.com', 'office.com', 'bing.com',
+  '*.github.com', 'github.com', 'github.io', '*.github.io', 'gitlab.com', 'npmjs.com',
+  '*.reddit.com', 'reddit.com', '*.linkedin.com', 'linkedin.com',
+  '*.netflix.com', 'netflix.com', '*.spotify.com', 'spotify.com',
+  '*.wikipedia.org', 'wikipedia.org', 'wikimedia.org',
+  '*.archive.org', 'archive.org', 'web.archive.org',
+  '*.stackoverflow.com', 'stackoverflow.com', 'stackexchange.com',
+  'superuser.com', 'serverfault.com',
+  '*.arxiv.org', 'arxiv.org', 'nature.com', 'sciencedirect.com',
+  '*.medium.com', 'medium.com', 'dev.to', 'substack.com',
+  '*.duckduckgo.com', 'duckduckgo.com', 'duck.com', 'lite.duckduckgo.com',
+  '*.yahoo.com', 'yahoo.com', '*.quora.com', 'quora.com',
+  '*.pinterest.com', 'pinterest.com', '*.tiktok.com', 'tiktok.com',
+  '*.snapchat.com', 'snapchat.com', 'telegram.org', 'telegram.me',
+  'discord.com', 'discord.gg', '*.slack.com', 'slack.com', 'zoom.us', '*.zoom.us',
+  '*.cloudflare.com', 'cloudflare.com', '*.docker.com', 'docker.com',
+  'hub.docker.com', 'kubernetes.io', 'terraform.io',
+  '*.python.org', 'python.org', 'nodejs.org', 'rust-lang.org', 'golang.org',
+  '*.mozilla.org', 'mozilla.org', 'developer.mozilla.org', 'firefox.com',
   'w3.org', 'ietf.org', 'ieee.org', 'nasa.gov', 'nih.gov', 'europa.eu'
 ];
+
+// Compile once: "*.x.com" -> /^([a-z0-9-]+\.)*x\.com$/
+const FAMOUS_REGEX = FAMOUS_PATTERNS.map((p) => {
+  const exact = !p.startsWith('*.');
+  const base = exact ? p : p.slice(2);
+  const esc = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(exact ? `^${esc}$` : `^([a-z0-9-]+\\.)*${esc}$`, 'i');
+});
+
+export function isFamousDomain(host) {
+  return FAMOUS_REGEX.some((re) => re.test(host));
+}
 
 // Domain priority: famous domains first, then .com, then X/Twitter, then others
 export function domainPriority(url) {
   try {
     const u = new URL(url);
     const host = u.hostname.replace(/^www\./, '');
-    if (FAMOUS_DOMAINS.includes(host)) return 0;
+    if (isFamousDomain(host)) return 0;
     if (host.endsWith('.com')) return 1;
     if (host === 'x.com' || host === 'twitter.com') return 2;
     if (host === 'archive.org') return 3;
