@@ -50,18 +50,18 @@ export default function SpiderSearch({ onBack = () => {} }) {
   // Important domains list
   const [open, setOpen] = useState(false);
   const [cfg, setCfg] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [domainsLoading, setDomainsLoading] = useState(true);
+  const [domainsError, setDomainsError] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
     fetch('/api/domains')
       .then((r) => r.json())
       .then((d) => {
-        if (!cancelled) { setCfg(d); setLoading(false); }
+        if (!cancelled) { setCfg(d); setDomainsLoading(false); }
       })
       .catch((e) => {
-        if (!cancelled) { setError(e.message); setLoading(false); }
+        if (!cancelled) { setDomainsError(e.message); setDomainsLoading(false); }
       });
     return () => { cancelled = true; };
   }, []);
@@ -592,8 +592,6 @@ const [submitted, setSubmitted] = useState('');
           </div>
         </footer>
       )}
-      </div>
-    </div>
 
       {/* ============ IMPORTANT DOMAINS ============ */}
       <div className="border-t border-slate-900 bg-[#020509]">
@@ -613,11 +611,11 @@ const [submitted, setSubmitted] = useState('');
             </summary>
 
             <div className="mt-6 space-y-6">
-              {loading && (
+              {domainsLoading && (
                 <p className="font-mono text-[11px] text-slate-500">loading domain list…</p>
               )}
-              {error && (
-                <p className="font-mono text-[11px] text-amber-400">could not load: {error}</p>
+              {domainsError && (
+                <p className="font-mono text-[11px] text-amber-400">could not load: {domainsError}</p>
               )}
 
               {brandNames.length > 0 && (
@@ -670,5 +668,7 @@ const [submitted, setSubmitted] = useState('');
           </details>
         </div>
       </div>
+      </div>
+    </div>
   );
 }
