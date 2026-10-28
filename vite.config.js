@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
+  // https://vitejs.dev/config/
+  export default defineConfig({
+    plugins: [react()],
+
+  // macOS 11.7 ships Safari 12.x by default; build to a JS target it can run.
+  build: {
+    target: 'es2019'
+  },
   
   // Configuration to change the host and port
   server: {
