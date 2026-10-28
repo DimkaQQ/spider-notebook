@@ -371,6 +371,7 @@ export default function App() {
   const [showCloud, setShowCloud] = useState(false);
   const [showChip, setShowChip] = useState(false);
   const [showNotebook, setShowNotebook] = useState(false);
+  const [showNotebookApp, setShowNotebookApp] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [previousPage, setPreviousPage] = useState('home');
   const [searchOpen, setSearchOpen] = useState(false);
@@ -409,10 +410,13 @@ export default function App() {
           setShowSpyDocs(false); setShowCloud(false); setShowChip(true); setShowNotebook(false);
           setCurrentPage(state.page || 'about');
         } else if (state.overlay === 'notebook') {
-          setShowSpyDocs(false); setShowCloud(false); setShowChip(false); setShowNotebook(true);
+          setShowSpyDocs(false); setShowCloud(false); setShowChip(false); setShowNotebook(true); setShowNotebookApp(false);
+          setCurrentPage(state.page || 'products');
+        } else if (state.overlay === 'notebookapp') {
+          setShowSpyDocs(false); setShowCloud(false); setShowChip(false); setShowNotebook(false); setShowNotebookApp(true);
           setCurrentPage(state.page || 'products');
         } else {
-          setShowSpyDocs(false); setShowCloud(false); setShowChip(false); setShowNotebook(false);
+          setShowSpyDocs(false); setShowCloud(false); setShowChip(false); setShowNotebook(false); setShowNotebookApp(false);
           setCurrentPage(state.page || 'home');
         }
         setPreviousPage(state.previousPage || 'home');
@@ -434,6 +438,7 @@ export default function App() {
     setShowCloud(false);
     setShowChip(false);
     setShowNotebook(false);
+    setShowNotebookApp(false);
     setCurrentPage(page);
     setPreviousPage(currentPage);
     setMobileMenuOpen(false);
@@ -1484,6 +1489,13 @@ export default function App() {
                   >
                     LAUNCH AGENT
                   </button>
+                ) : selectedProduct.id === 'notebook' ? (
+                  <button
+                    onClick={() => { setSelectedProduct(null); openOverlay(setShowNotebook, 'notebook'); }}
+                    className="flex-1 bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 font-bold font-mono text-xs py-2.5 rounded-lg tracking-wider text-center"
+                  >
+                    OPEN NOTEBOOK
+                  </button>
                 ) : selectedProduct.id === 'search' ? (
                   <button 
                     onClick={() => { setSelectedProduct(null); openOverlay(setShowSearch, 'search'); }}
@@ -1575,6 +1587,7 @@ export default function App() {
             <ul className="space-y-1.5 text-xs text-slate-400">
               <li><a href="https://maps.m4spider.com" target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition-colors">Spider Maps</a></li>
               <li><a href="https://ai.m4spider.com" target="_blank" rel="noreferrer" className="hover:text-cyan-400 transition-colors">Spider AI</a></li>
+              <li><button onClick={() => { openOverlay(setShowNotebookApp, 'notebookapp'); }} className="hover:text-cyan-400 transition-colors text-left">M4 Spider Notebook</button></li>
               <li><button onClick={() => { openOverlay(setShowNotebook, 'notebook'); }} className="hover:text-cyan-400 transition-colors text-left">M4 Spider Notebook AI Agent</button></li>
               <li><button onClick={() => navigateTo('projects')} className="hover:text-cyan-400 transition-colors text-left">Delivered Operations</button></li>
               <li><button onClick={() => navigateTo('people')} className="hover:text-cyan-400 transition-colors text-left">System Architects</button></li>
